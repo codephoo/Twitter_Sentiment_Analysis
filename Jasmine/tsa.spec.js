@@ -26,10 +26,10 @@ describe("connect to Twitter API", () => {
   });
   it("return Username not found", () => {
     let tweets= new FetchTweets('Non existing Username')
-    expect(new tweets.getTweets()).toBe("Username not found");
+    expect(new tweets._performRequest()).toBe("Username not found");
   });
   it('return User has no tweets', () =>{
     let tweets= new FetchTweets('sjsdfds')
-    expect(tweets.getTweets()).toBe("User has no tweets");
+    expect(tweets._performRequest()).toBe("User has no tweets");
   });
 });

@@ -11,18 +11,19 @@ read.question("What is your twitter username \n", function(ans){
   username =ans;
   read.close();
   let tweets =new FetchTweets(ans);
-  //api =+username;
   tweets.performRequest();
 })
 let userTweets='';
 let options={
-  uri: 'https://api.twitter.com/1.1/statuses/user_timeline.json?count=20&screen_name=',
+  uri: 'https://api.twitter.com/1.1/statuses/user_timeline.json?count=200&screen_name=',
 oauth:{
   consumer_secret:'ASYgVNsunwHzdYARQrau2br38xvkfTTqoWb0WSz7vSTfpJsn87',
 consumer_key:"Q1mgrdKQZfrKlcuFelNun7KCT",
 oauth_token:"176088436-4lSOAAl0syOqIlmog586qYlyFxnwzxJmQP1NZj0Y",
 }
 }
+
+/* Class to verify inputted username and fetch user tweets*/
 class FetchTweets{
   constructor(username){
     let self= this;
@@ -36,6 +37,9 @@ class FetchTweets{
     };
     try{verifyName(username)} catch(e){console.log(e)};
   }
+  /*Takes in a username and attempt to fetch the tweets for the
+  username using twitter API
+  */
   performRequest(username) {
   options.uri+=this.username;
   request(options, function (error, response, body) {
@@ -59,6 +63,11 @@ class FetchTweets{
           userTweets+=currentTweet.text+' ';
         });
         console.log(new WordFrequency(userTweets));
+        request.post('http://gateway-a.watsonplatform.net/calls/text/TextGetEmotion', 
+          {form:{apikey:'1131bac568b9396ac06c0cd785047a25bc313839',outputMode:'json',
+          text:userTweets}}, function(error,response,body){
+          console.log(body);
+        })
       }
     }
     if(response.statusCode===401){
@@ -71,22 +80,25 @@ class FetchTweets{
 })
 }
 }
+/* Class to implement word frequency analysis
+takes in a tweet and returns the frequency of 
+words in th tweet
+*/
 class WordFrequency{
   constructor (tweet){
   let tweetLowerCase = tweet.toLowerCase().trim().replace(/[,;.]/g,'').split(/[\s\/]+/g).sort();
   let wordCount = tweetLowerCase.length; // count w/ duplicates
-  // array of words to ignore
   let ignore = ['and','the','to','a','of','for','as','i','with','it','is','on'
   ,'that','this','can','in','be','has','if','https','http'];
   ignore = (function(){
-  let o = {}; // object prop checking > in array checking
+  let o = {};
   let ignoreLength = ignore.length;
   for (let i=0;i<ignoreLength;i++){
     o[ignore[i]] = true;
   }
   return o;
   }());
-  let counts = {}; // object for math
+  let counts = {};
   for (let i=0; i<wordCount; i++) {
     let sWord = tweetLowerCase[i];
     if (!ignore[sWord]) {
@@ -94,21 +106,19 @@ class WordFrequency{
       counts[sWord]++;
     }
   }
-  
-  let arr = []; // an array of objects to return
+  let arr = []; 
   for (var sWord in counts) {
     arr.push({
       text: sWord,
       frequency: counts[sWord]
     });
   }
-  // sort array by descending frequency | http://stackoverflow.com/a/8837505
   return arr.sort(function(a,b){
     return (a.frequency > b.frequency) ? -1 : ((a.frequency < b.frequency) ? 1 : 0);
   });
 }
 wordCounter() {
-let wordCount = words.length; // count w/o duplicates
+let wordCount = words.length; \
 for (let i=0; i<wordCount; i++) {
   let word = words[i];
   console.log(word.frequency, word.text);
@@ -116,10 +126,3 @@ for (let i=0; i<wordCount; i++) {
 }
 }
 
-let AlchemiAPIKey={
-  "credentials": {
-    "url": "https://gateway-a.watsonplatform.net/calls",
-    "note": "It may take up to 5 minutes for this key to become active",
-    "apikey": "1131bac568b9396ac06c0cd785047a25bc313839"
-  }
-};

@@ -32,7 +32,7 @@ class FetchTweets{
   constructor(username){
     let self= this;
     let verifyName = function(username){
-      if(typeof username !== typeof '' || username==='' || username ===undefined){
+      if( username==='' || username ===undefined){
         throw new Error("Invalid Username");
         return;
       }

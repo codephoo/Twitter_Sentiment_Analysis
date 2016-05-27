@@ -15,7 +15,7 @@ read.question("What is your twitter username \n", function(ans){
 })
 let userTweets='';
 let options={
-  uri: 'https://api.twitter.com/1.1/statuses/user_timeline.json?count=200&screen_name=',
+  uri: 'https://api.twitter.com/1.1/statuses/user_timeline.json?count=10&screen_name=',
 oauth:{
   consumer_secret:'ASYgVNsunwHzdYARQrau2br38xvkfTTqoWb0WSz7vSTfpJsn87',
 consumer_key:"Q1mgrdKQZfrKlcuFelNun7KCT",
@@ -40,7 +40,7 @@ class FetchTweets{
   /*Takes in a username and attempt to fetch the tweets for the
   username using twitter API
   */
-  performRequest(username) {
+  performRequest() {
   options.uri+=this.username;
   request(options, function (error, response, body) {
     body=JSON.parse(body);
@@ -62,7 +62,8 @@ class FetchTweets{
         result.forEach(function(currentTweet){
           userTweets+=currentTweet.text+' ';
         });
-        console.log(new WordFrequency(userTweets));
+        let words=new WordFrequency(userTweets);
+        console.log(words.wordCounter());
         request.post('http://gateway-a.watsonplatform.net/calls/text/TextGetEmotion', 
           {form:{apikey:'1131bac568b9396ac06c0cd785047a25bc313839',outputMode:'json',
           text:userTweets}}, function(error,response,body){
@@ -76,7 +77,6 @@ class FetchTweets{
                   userEmo=emo;
                 }
               }
-              console.log(x);
               console.log(result['docEmotions']);
               console.log('User has a high level of '+userEmo);
             }
@@ -129,16 +129,17 @@ class WordFrequency{
       frequency: counts[sWord]
     });
   }
-  return arr.sort(function(a,b){
+  this.words= arr.sort(function(a,b){
     return (a.frequency > b.frequency) ? -1 : ((a.frequency < b.frequency) ? 1 : 0);
   });
 }
 wordCounter() {
-let wordCount = words.length; 
-for (let i=0; i<wordCount; i++) {
-  let word = words[i];
+let wordCount = this.words.length; 
+for (let i=0; i<wordCount-1; i++) {
+  let word = this.words[i];
   console.log(word.frequency, word.text);
 };
+return '';
 }
 }
 

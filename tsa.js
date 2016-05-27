@@ -66,7 +66,23 @@ class FetchTweets{
         request.post('http://gateway-a.watsonplatform.net/calls/text/TextGetEmotion', 
           {form:{apikey:'1131bac568b9396ac06c0cd785047a25bc313839',outputMode:'json',
           text:userTweets}}, function(error,response,body){
-          console.log(body);
+            if(!error){
+              let result = JSON.parse(body);
+              let x=0;
+              let userEmo=''
+              for(var emo in result['docEmotions']){
+                if(result['docEmotions'][emo]>x){
+                  x= result['docEmotions'][emo];
+                  userEmo=emo;
+                }
+              }
+              console.log(x);
+              console.log(result['docEmotions']);
+              console.log('User has a high level of '+userEmo);
+            }
+            else{
+              return 'Try again';
+            }
         })
       }
     }
@@ -118,7 +134,7 @@ class WordFrequency{
   });
 }
 wordCounter() {
-let wordCount = words.length; \
+let wordCount = words.length; 
 for (let i=0; i<wordCount; i++) {
   let word = words[i];
   console.log(word.frequency, word.text);

@@ -11,7 +11,7 @@ read.question("What is your twitter username \n", function(ans){
   username =ans;
   read.close();
   let tweets =new FetchTweets(ans);
-  tweets.performRequest();
+  tweets._performRequest();
 })
 let userTweets='';
 let options={
@@ -40,7 +40,7 @@ class FetchTweets{
   /*Takes in a username and attempt to fetch the tweets for the
   username using twitter API
   */
-  performRequest() {
+  _performRequest() {
   options.uri+=this.username;
   request(options, function (error, response, body) {
     body=JSON.parse(body);
@@ -63,7 +63,7 @@ class FetchTweets{
           userTweets+=currentTweet.text+' ';
         });
         let words=new WordFrequency(userTweets);
-        console.log(words.wordCounter());
+        console.log(words._wordCounter());
         request.post('http://gateway-a.watsonplatform.net/calls/text/TextGetEmotion', 
           {form:{apikey:'1131bac568b9396ac06c0cd785047a25bc313839',outputMode:'json',
           text:userTweets}}, function(error,response,body){
@@ -102,40 +102,40 @@ words in th tweet
 */
 class WordFrequency{
   constructor (tweet){
-  let tweetLowerCase = tweet.toLowerCase().trim().replace(/[,;.]/g,'').split(/[\s\/]+/g).sort();
-  let wordCount = tweetLowerCase.length; // count w/ duplicates
-  let ignore = ['and','the','to','a','of','for','as','i','with','it','is','on'
+  let _tweetLowerCase = tweet.toLowerCase().trim().replace(/[,;.]/g,'').split(/[\s\/]+/g).sort();
+  let _wordCount = _tweetLowerCase.length; // count w/ duplicates
+  let _ignore = ['and','the','to','a','of','for','as','i','with','it','is','on'
   ,'that','this','can','in','be','has','if','https','http'];
-  ignore = (function(){
+  _ignore = (function(){
   let o = {};
-  let ignoreLength = ignore.length;
+  let ignoreLength = _ignore.length;
   for (let i=0;i<ignoreLength;i++){
-    o[ignore[i]] = true;
+    o[_ignore[i]] = true;
   }
   return o;
   }());
-  let counts = {};
-  for (let i=0; i<wordCount; i++) {
-    let sWord = tweetLowerCase[i];
-    if (!ignore[sWord]) {
-      counts[sWord] = counts[sWord] || 0;
-      counts[sWord]++;
+  let _counts = {};
+  for (let i=0; i<_wordCount; i++) {
+    let sWord = _tweetLowerCase[i];
+    if (!_ignore[sWord]) {
+      _counts[sWord] = _counts[sWord] || 0;
+      _counts[sWord]++;
     }
   }
-  let arr = []; 
-  for (var sWord in counts) {
-    arr.push({
+  let _arr = []; 
+  for (var sWord in _counts) {
+    _arr.push({
       text: sWord,
-      frequency: counts[sWord]
+      frequency: _counts[sWord]
     });
   }
-  this.words= arr.sort(function(a,b){
+  this.words= _arr.sort(function(a,b){
     return (a.frequency > b.frequency) ? -1 : ((a.frequency < b.frequency) ? 1 : 0);
   });
 }
-wordCounter() {
+_wordCounter() {
 let wordCount = this.words.length; 
-for (let i=0; i<wordCount-1; i++) {
+for (let i=0; i<wordCount; i++) {
   let word = this.words[i];
   console.log(word.frequency, word.text);
 };

@@ -1,0 +1,23 @@
+{
+  "name": "tsa",
+  "version": "1.0.0",
+  "description": "Twitter Sentiment Analysis",
+  "main": "tsa.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shola",
+  "license": "ISC",
+  "dependencies": {
+    "cli-progress": "^1.1.2",
+    "request": "^2.72.0"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "Twitter"
+  ],
+  "preferGlobal": true,
+  "bin": {
+    "tsa_cli": "./bin/tsa.js"
+  }
+}

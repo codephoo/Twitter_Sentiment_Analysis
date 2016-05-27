@@ -1,6 +1,6 @@
-describe("validate input from user", () =>{
+describe("validate input from user", () =>{console.log('s');
   it("should return a string", () =>{
-    let tweets= new FetchTweets('shawlhar');
+    let tweets= new FetchTweets('andela');
     expect(typeof tweets.username).toBe(typeof '');
   });
   it("should be greater than 0", () => {
@@ -29,6 +29,6 @@ describe("connect to Twitter API", () => {
   });
   it('return User has no tweets', () =>{
     let tweets= new FetchTweets('sjsdfds')
-    expect(tweets.getTweets()).toBe("User has no tweets"));
+    expect(tweets.getTweets()).toBe("User has no tweets");
   });
 });
